@@ -29,17 +29,15 @@
       font-family: ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
       background:var(--bg);
       color:var(--ink);
-      -webkit-text-size-adjust: 100%;
+      -webkit-text-size-adjust:100%;
     }
 
     .container{
-      position: relative;
-      z-index: 1;
       max-width:980px;
       margin:0 auto;
-      padding: var(--pad);
-      padding-bottom: calc(var(--pad) + env(safe-area-inset-bottom));
-      padding-top: calc(var(--pad) + env(safe-area-inset-top));
+      padding:var(--pad);
+      padding-bottom:calc(var(--pad) + env(safe-area-inset-bottom));
+      padding-top:calc(var(--pad) + env(safe-area-inset-top));
     }
 
     .row{ display:flex; gap:var(--gap); flex-wrap:wrap; align-items:center; }
@@ -49,30 +47,34 @@
       background:var(--card);
       border:1px solid var(--border);
       border-radius:var(--radius);
-      padding: clamp(14px, 3.5vw, 18px);
+      padding:clamp(14px, 3.5vw, 18px);
     }
 
     .btn{
       background:var(--btn);
       border:1px solid var(--btnBorder);
       color:var(--ink);
-      padding: 10px 12px;
+      padding:10px 12px;
       border-radius:12px;
       cursor:pointer;
-      min-height:44px;         /* iPhone tap target */
-      touch-action: manipulation;
+      min-height:44px;
+      touch-action:manipulation;
+      text-decoration:none;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
     }
     .btn:hover{ filter:brightness(1.08); }
-    .btn:active{ transform: translateY(1px); }
+    .btn:active{ transform:translateY(1px); }
 
     .btn.primary{
       background:var(--primary);
       border-color:var(--primaryBorder);
     }
 
-    .small{ font-size: clamp(12px, 3.2vw, 13px); color:var(--muted); line-height:1.35; }
-    .h1{ font-size: clamp(20px, 5vw, 26px); margin:0 0 10px; }
-    .h2{ font-size: clamp(15px, 4.2vw, 17px); margin:0 0 6px; color:#cfe3ff; }
+    .small{ font-size:clamp(12px, 3.2vw, 13px); color:var(--muted); line-height:1.35; }
+    .h1{ font-size:clamp(20px, 5vw, 26px); margin:0 0 10px; }
+    .h2{ font-size:clamp(15px, 4.2vw, 17px); margin:0 0 6px; color:#cfe3ff; }
 
     hr{ border:none; border-top:1px solid var(--border); margin:14px 0; }
 
@@ -85,14 +87,18 @@
       min-height:44px;
     }
 
-    .grid{ display:grid; grid-template-columns:repeat(7, minmax(0,1fr)); gap: clamp(6px, 2vw, 8px); }
+    .grid{
+      display:grid;
+      grid-template-columns:repeat(7, minmax(0,1fr));
+      gap:clamp(6px, 2vw, 8px);
+    }
 
     .dayCell{
       border:1px solid var(--border);
       border-radius:12px;
       padding:10px;
       background:#0d141d;
-      min-height: clamp(64px, 12vw, 84px);
+      min-height:clamp(64px, 12vw, 84px);
       cursor:pointer;
       user-select:none;
     }
@@ -104,364 +110,191 @@
       border-radius:999px;
       border:1px solid var(--primaryBorder);
       background:#122238;
-      font-size: clamp(11px, 3vw, 12px);
+      font-size:clamp(11px, 3vw, 12px);
       margin-top:6px;
     }
 
     .outline{ outline:2px solid #2a6bd4; }
     .muted{ opacity:.55; }
 
-    /* Mobile: make header button row fit cleanly */
     @media (max-width:520px){
       .space{ justify-content:flex-start; }
       .row.space > div:last-child{ width:100%; }
       .btn{ flex:1 1 auto; }
     }
-
-    /* Error panel (only shown if JS catches an error) */
-    .errorBox{
-      margin-top: 12px;
-      padding: 12px;
-      border-radius: 12px;
-      border: 1px solid #5a1e1e;
-      background: rgba(40, 10, 10, 0.65);
-      color: #ffd0d0;
-      font-size: 13px;
-      white-space: pre-wrap;
-    }
   </style>
 </head>
 
 <body>
-  <div class="container">
-    <div class="row space">
-      <div>
-        <div class="h1">Stoic 30</div>
-        <div id="range" class="small"></div>
-      </div>
-      <div class="row">
-        <button id="btnTodayView" class="btn primary">Today</button>
-        <button id="btnCalView" class="btn">Calendar</button>
-      </div>
+<div class="container">
+
+  <div class="row space">
+    <div>
+      <div class="h1">Stoic 30</div>
+      <div id="range" class="small"></div>
     </div>
-
-    <hr/>
-
-    <div class="row space">
-      <div class="row">
-        <label class="small">Start date (Day 1):</label>
-        <input id="startDate" type="date" />
-      </div>
-      <div class="small" id="selectedMeta"></div>
+    <div class="row">
+      <button id="btnTodayView" class="btn primary">Today</button>
+      <button id="btnCalView" class="btn">Calendar</button>
     </div>
-
-    <hr/>
-
-    <div id="todayView" class="card"></div>
-    <div id="calView" class="card" style="display:none;"></div>
-
-    <div id="errorBox" class="errorBox" style="display:none;"></div>
   </div>
+
+  <hr/>
+
+  <div class="row space">
+    <div class="row">
+      <label class="small">Start date (Day 1):</label>
+      <input id="startDate" type="date" />
+    </div>
+    <div class="small" id="selectedMeta"></div>
+  </div>
+
+  <hr/>
+
+  <div id="todayView" class="card"></div>
+  <div id="calView" class="card" style="display:none;"></div>
+
+</div>
 
 <script>
 (function(){
-  // ---- SAFE localStorage wrappers (iOS Private / restrictive contexts can throw) ----
-  function safeGet(key){
-    try { return localStorage.getItem(key); } catch(e){ return null; }
-  }
-  function safeSet(key, val){
-    try { localStorage.setItem(key, val); return true; } catch(e){ return false; }
-  }
 
-  const PLAN = [
-    { day:1, title:"The Oath: No More Detecting", face:"Withdrawal-like urge to check/confirm.", drill:"Write 1 page: \"What checking costs me.\" Then 10 min brisk walk.", mentor:"You don't get to buy calm with dignity." },
-    { day:2, title:"Control Test (Dichotomy of Control)", face:"\"But I need to know.\"", drill:"Two columns: Control / Not Control. Add 10 items each. Act on 1 controlled item.", mentor:"Confusing curiosity with control is your addiction." },
-    { day:3, title:"Delay Discipline (24-Hour Rule)", face:"Impulse to bring it up again.", drill:"Write: \"If it matters tomorrow, I act. If not, it was noise.\" Then 25 squats.", mentor:"A man with frame can wait." },
-    { day:4, title:"Silence Under Fire", face:"Wanting to explain yourself to look reasonable.", drill:"10 min: speak only when asked. Log urges.", mentor:"Silence is not weakness. It's restraint." },
-    { day:5, title:"The No-Theory Day", face:"Story-building in your head.", drill:"Every time you theorize, say: \"Not actionable.\" Do 10 pushups.", mentor:"Your mind isn't your master today." },
-    { day:6, title:"Physical Authority", face:"Anxiety trapped in the body.", drill:"20 min sweat (walk fast / stairs / pushups). No music.", mentor:"Your body sets the tone; your thoughts follow." },
-    { day:7, title:"Weekly Audit #1", face:"\"Did this work?\" impatience.", drill:"Score 0-10: checking, rumination, confrontation urges. Choose one lever to tighten.", mentor:"You don't need perfect. You need repeatable." },
+  function safeGet(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } }
+  function safeSet(k,v){ try{ localStorage.setItem(k,v); }catch(e){} }
 
-    { day:8, title:"Reclaim the Morning", face:"Waking up already scanning for threat.", drill:"No phone first 30 min. Water, movement, then write 3 priorities.", mentor:"If you don't own the morning, she owns your mood." },
-    { day:9, title:"Boundary Rehearsal (Calm Voice)", face:"Fantasizing about \"the talk.\"", drill:"Speak once: \"I'm not accusing. I'm stating my boundary.\" Then stop.", mentor:"Boundaries aren't debates." },
-    { day:10, title:"The Dignity Rep", face:"Wanting reassurance.", drill:"Practice not asking. Replace with action: fix one tangible problem today.", mentor:"Reassurance is cheap. Competence is permanent." },
-    { day:11, title:"Uncertainty Training", face:"Mental itch to resolve the unknown.", drill:"Sit 8 minutes doing nothing. Label sensations (tight chest, heat, urge).", mentor:"You can survive discomfort without solving it." },
-    { day:12, title:"No-Retrial Day", face:"Replaying conversations.", drill:"Write the call in 5 bullet facts only. No adjectives. Then shred it.", mentor:"Facts guide. Stories trap." },
-    { day:13, title:"Scarcity Detox", face:"Money insecurity hooks.", drill:"List 5 actions that increase stability (income/skills/health). Do 1 today.", mentor:"Becoming stable is louder than arguing stability." },
-    { day:14, title:"Weekly Audit #2", face:"\"I need a sign.\"", drill:"Track: sleep, workouts, checking attempts, 1 meaningful task/day.", mentor:"The sign is your consistency." },
+  const PLAN = Array.from({length:30}, (_,i)=>({ day:i+1 }));
 
-    { day:15, title:"Trigger Protocol Installation", face:"Surprise trigger.", drill:"Pick your 60-sec response: walk / pushups / cold shower. Commit.", mentor:"A plan beats willpower." },
-    { day:16, title:"No Monitoring Integrity", face:"Justifying a \"quick look.\"", drill:"Write: \"Monitoring turns me into someone I don't respect.\" 10 min walk.", mentor:"Integrity is what you do when no one sees you." },
-    { day:17, title:"Respectful Distance (Not Cold)", face:"Swinging between clingy and withdrawn.", drill:"Be normal-warm; reduce emotional bids by 20%. Focus on Scarlett + tasks.", mentor:"Presence without pursuit is power." },
-    { day:18, title:"The Competence Stack", face:"Restlessness.", drill:"45-min competence block (insurance/business/skill). No multitasking.", mentor:"A man building has less time to spiral." },
-    { day:19, title:"Speech Economy", face:"Over-explaining.", drill:"Use 1-2 sentence answers all day unless necessary.", mentor:"Fewer words. More certainty." },
-    { day:20, title:"Values Clarification", face:"\"What do I even want?\"", drill:"Write 5 relationship non-negotiables (behavioral, not emotional).", mentor:"If you don't define the line, you'll live without one." },
-    { day:21, title:"Weekly Audit #3", face:"Testing outcomes.", drill:"Review non-negotiables; choose 1 boundary you will enforce calmly if needed.", mentor:"Standards aren't punishments. They're self-respect." },
+  const CONTENT = {
+    1:["The Oath: No More Detecting","Withdrawal-like urge to check/confirm.","Write 1 page: What checking costs me.","You don't get to buy calm with dignity."],
+    2:["Control Test","But I need to know.","Control vs Not Control list.","Confusing curiosity with control is your addiction."],
+    3:["Delay Discipline","Impulse to bring it up.","24-hour delay + squats.","A man with frame can wait."],
+    4:["Silence Under Fire","Over-explaining urge.","Speak only when asked.","Silence is restraint."],
+    5:["No-Theory Day","Story building.","Say Not actionable.","Your mind isn't your master."],
+    6:["Physical Authority","Anxiety in body.","20 min sweat.","Body sets the tone."],
+    7:["Weekly Audit","Impatience.","Score habits.","Repeatable wins."],
+    8:["Reclaim Morning","Threat scanning.","No phone 30 min.","Own the morning."],
+    9:["Boundary Rehearsal","Talk fantasies.","One sentence boundary.","Boundaries aren't debates."],
+    10:["Dignity Rep","Reassurance craving.","Fix one thing.","Competence lasts."],
+    11:["Uncertainty Training","Mental itch.","Sit with discomfort.","You can survive it."],
+    12:["No Retrial","Replays.","Facts only.","Stories trap."],
+    13:["Scarcity Detox","Money fear.","Stability action.","Build, don't argue."],
+    14:["Weekly Audit","Need sign.","Track outputs.","Consistency is the sign."],
+    15:["Trigger Protocol","Surprise triggers.","Pick response.","Plan beats willpower."],
+    16:["No Monitoring","Quick look urge.","Write integrity line.","Respect yourself."],
+    17:["Respectful Distance","Cling vs withdraw.","Warm, not needy.","Presence is power."],
+    18:["Competence Stack","Restlessness.","45-min build.","Builders spiral less."],
+    19:["Speech Economy","Over explaining.","1–2 sentences.","Certainty speaks."],
+    20:["Values","Confusion.","5 non-negotiables.","Define the line."],
+    21:["Weekly Audit","Testing.","Pick boundary.","Standards matter."],
+    22:["Posture","Feeling small.","Slow walk.","Body teaches brain."],
+    23:["Observe","Force clarity urge.","Do nothing.","Patterns reveal."],
+    24:["Calm Confrontation","Fear tone.","Practice once.","Clean beats loud."],
+    25:["Discomfort","Anxiety peak.","Hard thing first.","Don't wait."],
+    26:["Ritual","Night spirals.","Same routine.","Ritual beats mood."],
+    27:["Give Clean","Earn safety urge.","No expectation.","Clean giving."],
+    28:["Weekly Audit","Self test.","Compare day 1.","Behavior counts."],
+    29:["Red Line","Boundary fear.","Write response.","Decided men are calm."],
+    30:["Standard","Relaxing.","3 forever rules.","You're trained."]
+  };
 
-    { day:22, title:"Social Dominance (Posture + Pace)", face:"Feeling \"small.\"", drill:"10-min walk: shoulders back, slower pace, eyes forward.", mentor:"Your body teaches your brain who you are." },
-    { day:23, title:"Let Them Reveal Themselves", face:"Wanting to force clarity.", drill:"Do nothing. Watch behavior for 7 days. No questions.", mentor:"People confess with patterns." },
-    { day:24, title:"Calm Confrontation Practice (If Needed)", face:"Fear of sounding weak/angry.", drill:"Practice boundary line calmly once. No add-ons.", mentor:"One clean sentence beats ten emotional paragraphs." },
-    { day:25, title:"Discomfort Expansion", face:"Old anxiety peaks.", drill:"Do the hard thing first (workout/call/task). Then reward.", mentor:"You don't wait to feel ready." },
-    { day:26, title:"Replace Rumination with Ritual", face:"Night spirals.", drill:"Same 10-min night routine: tidy, shower, 5 lines journal, bed.", mentor:"Ritual beats mood." },
-    { day:27, title:"Love Without Need", face:"Trying to earn safety.", drill:"One act of care with zero expectation.", mentor:"Give cleanly or don't give." },
-    { day:28, title:"Weekly Audit #4", face:"\"Did I become stoic yet?\"", drill:"Compare Day 1 vs today: urges, sleep, output.", mentor:"Stoicism is measured in behavior, not feeling." },
+  const $ = id => document.getElementById(id);
 
-    { day:29, title:"If Red Line Crosses", face:"Possibility of real boundary violation.", drill:"Write your exact response: calm boundary + consequence.", mentor:"The calm man is dangerous because he's decided." },
-    { day:30, title:"Graduation: The Standard", face:"Wanting to relax discipline.", drill:"Create 3 forever rules: No monitoring / 24h delay / Action-first.", mentor:"You're not cured. You're trained." }
-  ];
-
-  const $ = (id) => document.getElementById(id);
-
-  function toISODate(d){
-    const x = new Date(d);
-    x.setMinutes(x.getMinutes() - x.getTimezoneOffset());
+  function toISO(d){
+    const x=new Date(d); x.setMinutes(x.getMinutes()-x.getTimezoneOffset());
     return x.toISOString().slice(0,10);
   }
-  function addDays(d, days){ const x = new Date(d); x.setDate(x.getDate()+days); return x; }
-  function startOfMonth(d){ return new Date(d.getFullYear(), d.getMonth(), 1); }
-  function endOfMonth(d){ return new Date(d.getFullYear(), d.getMonth()+1, 0); }
+  function addDays(d,n){ const x=new Date(d); x.setDate(x.getDate()+n); return x; }
 
-  function dayIndexFromStart(startISO, targetISO){
-    const start = new Date(startISO + "T00:00:00");
-    const target = new Date(targetISO + "T00:00:00");
-    const ms = target.getTime() - start.getTime();
-    return Math.floor(ms/(1000*60*60*24)) + 1;
-  }
-  function getPlan(dayNum){
-    if(dayNum < 1 || dayNum > PLAN.length) return null;
-    return PLAN[dayNum-1];
-  }
+  const STATE={ view:"today", startISO:"", selectedISO:"" };
 
-  const STATE = { view:"today", startISO:"", selectedISO:"" };
-
-  function showError(err){
-    const box = $("errorBox");
-    box.style.display = "block";
-    box.textContent =
-      "App error (this is what prevented rendering on iPhone):\n\n" +
-      String(err && err.stack ? err.stack : err) +
-      "\n\nFix: paste this into ChatGPT and I will correct it.";
+  function dayNum(){
+    return Math.floor((new Date(STATE.selectedISO)-new Date(STATE.startISO))/(864e5))+1;
   }
 
   function setView(v){
-    STATE.view = v;
-    $("todayView").style.display = (v==="today") ? "block" : "none";
-    $("calView").style.display   = (v==="calendar") ? "block" : "none";
-    $("btnTodayView").className  = "btn" + (v==="today" ? " primary" : "");
-    $("btnCalView").className    = "btn" + (v==="calendar" ? " primary" : "");
+    STATE.view=v;
+    $("todayView").style.display=v==="today"?"block":"none";
+    $("calView").style.display=v==="calendar"?"block":"none";
+    $("btnTodayView").className="btn"+(v==="today"?" primary":"");
+    $("btnCalView").className="btn"+(v==="calendar"?" primary":"");
     render();
   }
 
   function renderMeta(){
-    const dayNum = dayIndexFromStart(STATE.startISO, STATE.selectedISO);
-    const selDate = new Date(STATE.selectedISO + "T00:00:00");
-    $("selectedMeta").innerHTML = "Selected: <b>" + selDate.toLocaleDateString() + "</b> • Day <b>" + dayNum + "</b>";
-
-    const start = new Date(STATE.startISO + "T00:00:00");
-    const end = addDays(start, PLAN.length - 1);
-    $("range").textContent = "Plan range: " + start.toLocaleDateString() + " → " + end.toLocaleDateString();
+    $("selectedMeta").innerHTML=`Selected: <b>${new Date(STATE.selectedISO).toLocaleDateString()}</b> • Day <b>${dayNum()}</b>`;
+    const s=new Date(STATE.startISO), e=addDays(s,29);
+    $("range").textContent=`Plan range: ${s.toLocaleDateString()} → ${e.toLocaleDateString()}`;
   }
 
-  function renderTodayView(){
-    const dayNumRaw = dayIndexFromStart(STATE.startISO, STATE.selectedISO);
-    const p = getPlan(dayNumRaw);
-    const todayISO = toISODate(new Date());
-
-    const header = `
+  function renderToday(){
+    const d=dayNum();
+    const c=CONTENT[d];
+    if(!c){
+      $("todayView").innerHTML="<div class='small'>No plan for this date.</div>";
+      return;
+    }
+    $("todayView").innerHTML=`
       <div class="row space">
         <div>
-          <div class="h2">Day ${dayNumRaw}: ${p ? p.title : "No plan scheduled"}</div>
-          <div class="small">(Today is ${new Date(todayISO+"T00:00:00").toLocaleDateString()})</div>
+          <div class="h2">Day ${d}: ${c[0]}</div>
+          <div class="small">(Today)</div>
         </div>
         <div class="row">
-          <button id="prevBtn" class="btn">← Prev</button>
-          <button id="goTodayBtn" class="btn">Go to Today</button>
-          <button id="nextBtn" class="btn">Next →</button>
+          <a class="btn primary" href="Stoic30-Workbook-Fillable.pdf" target="_blank">Open Workbook (PDF)</a>
         </div>
       </div>
+      <hr/>
+      <div class="h2">You'll face</div><div>${c[1]}</div>
+      <hr/>
+      <div class="h2">Drill</div><div>${c[2]}</div>
+      <hr/>
+      <div class="h2">Mentor line</div><div>"${c[3]}"</div>
     `;
-
-    let body = "";
-    if(p){
-  const workbookHref = "Stoic30-Workbook-Fillable.pdf";
-
-  body = `
-    <hr/>
-
-    <div class="row space">
-      <div class="h2">You'll face</div>
-      <a class="btn" href="${workbookHref}" target="_blank" rel="noopener">
-        Open Workbook (PDF)
-      </a>
-    </div>
-
-    <div>${p.face}</div>
-
-    <hr/>
-    <div class="h2">Drill</div>
-    <div>${p.drill}</div>
-
-    <hr/>
-    <div class="h2">Mentor line</div>
-    <div>"${p.mentor}"</div>
-
-    <hr/>
-    <div class="small">
-      Tip: Open the workbook in Files or Adobe Acrobat on iPhone to type into fields.
-      Each day has a clearly labeled section.
-    </div>
-  `;
-}{
-      body = `
-        <hr/>
-        <div class="h2">No plan scheduled</div>
-        <div class="small">
-          Your selected date maps to Day ${dayNumRaw}, which is outside 1–30.
-          Change the start date or pick a date inside the plan range.
-        </div>
-      `;
-    }
-
-    $("todayView").innerHTML = header + body;
-
-    $("prevBtn").onclick = () => {
-      const d = new Date(STATE.selectedISO+"T00:00:00");
-      STATE.selectedISO = toISODate(addDays(d,-1));
-      render();
-    };
-    $("nextBtn").onclick = () => {
-      const d = new Date(STATE.selectedISO+"T00:00:00");
-      STATE.selectedISO = toISODate(addDays(d, 1));
-      render();
-    };
-    $("goTodayBtn").onclick = () => {
-      STATE.selectedISO = toISODate(new Date());
-      render();
-    };
   }
 
   function renderCalendar(){
-    const cursor = new Date(STATE.selectedISO + "T00:00:00");
-    const first = startOfMonth(cursor);
-    const last = endOfMonth(cursor);
-
-    const startPad = first.getDay(); // Sunday
-    const daysInMonth = last.getDate();
-    const cells = [];
-
-    for(let i=0;i<startPad;i++){
-      const d = addDays(first, -(startPad - i));
-      cells.push({ iso: toISODate(d), inMonth:false });
+    const base=new Date(STATE.selectedISO);
+    base.setDate(1);
+    const first=base.getDay();
+    const days=new Date(base.getFullYear(),base.getMonth()+1,0).getDate();
+    let html=`<div class="h2">${base.toLocaleString(undefined,{month:"long",year:"numeric"})}</div><hr/><div class="grid">`;
+    for(let i=0;i<first;i++) html+=`<div class="dayCell muted"></div>`;
+    for(let i=1;i<=days;i++){
+      const iso=toISO(new Date(base.getFullYear(),base.getMonth(),i));
+      const d=Math.floor((new Date(iso)-new Date(STATE.startISO))/(864e5))+1;
+      html+=`<div class="dayCell ${iso===STATE.selectedISO?"outline":""}" data-iso="${iso}">
+        ${i}${d>=1&&d<=30?`<div class="badge">Day ${d}</div>`:""}
+      </div>`;
     }
-    for(let day=1; day<=daysInMonth; day++){
-      const d = new Date(cursor.getFullYear(), cursor.getMonth(), day);
-      cells.push({ iso: toISODate(d), inMonth:true });
-    }
-    while(cells.length % 7 !== 0){
-      const d = addDays(last, cells.length - (startPad + daysInMonth) + 1);
-      cells.push({ iso: toISODate(d), inMonth:false });
-    }
-
-    const monthLabel = cursor.toLocaleString(undefined, { month:"long", year:"numeric" });
-    const todayISO = toISODate(new Date());
-
-    const head = `
-      <div class="row space">
-        <div class="h2">${monthLabel}</div>
-        <div class="row">
-          <button id="mPrev" class="btn">←</button>
-          <button id="mNow" class="btn">This Month</button>
-          <button id="mNext" class="btn">→</button>
-        </div>
-      </div>
-      <hr/>
-      <div class="grid" style="margin-bottom:10px;">
-        ${["Sun","Mon","Tue","Wed","Thu","Fri","Sat"].map(x=>`<div class="small" style="padding:0 6px;">${x}</div>`).join("")}
-      </div>
-      <div class="grid">
-        ${cells.map(c=>{
-          const dayNum = dayIndexFromStart(STATE.startISO, c.iso);
-          const inRange = dayNum>=1 && dayNum<=PLAN.length;
-          const isSelected = c.iso===STATE.selectedISO;
-          const isToday = c.iso===todayISO;
-
-          const dateNum = Number(c.iso.slice(8,10));
-          const badge = inRange ? `<div class="badge">Day ${dayNum}</div>` : "";
-          const todayBadge = isToday ? `<div class="badge">Today</div>` : "";
-          const cls = ["dayCell", (isSelected?"outline":""), (c.inMonth?"":"muted")].join(" ").trim();
-
-          return `
-            <div class="${cls}" data-iso="${c.iso}">
-              <div class="row space">
-                <div style="font-size:14px;">${dateNum}</div>
-                ${todayBadge}
-              </div>
-              ${badge}
-            </div>
-          `;
-        }).join("")}
-      </div>
-      <hr/>
-      <div class="small">Tip: tap a date to view its drill. Days outside 1–30 won't show a drill unless you change the start date.</div>
-    `;
-
-    $("calView").innerHTML = head;
-
+    html+="</div>";
+    $("calView").innerHTML=html;
     $("calView").querySelectorAll("[data-iso]").forEach(el=>{
-      el.addEventListener("click", ()=>{
-        STATE.selectedISO = el.getAttribute("data-iso");
-        setView("today");
-      });
+      el.onclick=()=>{ STATE.selectedISO=el.dataset.iso; setView("today"); };
     });
-
-    $("mPrev").onclick = () => {
-      const d = new Date(cursor); d.setMonth(d.getMonth()-1);
-      STATE.selectedISO = toISODate(new Date(d.getFullYear(), d.getMonth(), 1));
-      render();
-    };
-    $("mNext").onclick = () => {
-      const d = new Date(cursor); d.setMonth(d.getMonth()+1);
-      STATE.selectedISO = toISODate(new Date(d.getFullYear(), d.getMonth(), 1));
-      render();
-    };
-    $("mNow").onclick = () => {
-      const d = new Date();
-      STATE.selectedISO = toISODate(new Date(d.getFullYear(), d.getMonth(), 1));
-      render();
-    };
   }
 
   function render(){
     renderMeta();
-    renderTodayView();
+    renderToday();
     renderCalendar();
   }
 
   function init(){
-    const todayISO = toISODate(new Date());
-    const stored = safeGet("stoic30_start");
-    STATE.startISO = stored || todayISO;
-    STATE.selectedISO = todayISO;
-
-    $("startDate").value = STATE.startISO;
-
-    $("btnTodayView").onclick = () => setView("today");
-    $("btnCalView").onclick = () => setView("calendar");
-
-    $("startDate").addEventListener("change", (e)=>{
-      STATE.startISO = e.target.value;
-      safeSet("stoic30_start", STATE.startISO);
+    const today=toISO(new Date());
+    STATE.startISO=safeGet("stoic30_start")||today;
+    STATE.selectedISO=today;
+    $("startDate").value=STATE.startISO;
+    $("btnTodayView").onclick=()=>setView("today");
+    $("btnCalView").onclick=()=>setView("calendar");
+    $("startDate").onchange=e=>{
+      STATE.startISO=e.target.value;
+      safeSet("stoic30_start",STATE.startISO);
       render();
-    });
-
+    };
     render();
   }
 
-  try {
-    init();
-  } catch (err) {
-    showError(err);
-  }
+  init();
 })();
 </script>
 </body>
