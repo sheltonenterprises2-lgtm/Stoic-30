@@ -283,18 +283,35 @@
 
     let body = "";
     if(p){
-      body = `
-        <hr/>
-        <div class="h2">You'll face</div>
-        <div>${p.face}</div>
-        <hr/>
-        <div class="h2">Drill</div>
-        <div>${p.drill}</div>
-        <hr/>
-        <div class="h2">Mentor line</div>
-        <div>"${p.mentor}"</div>
-      `;
-    } else {
+  const workbookHref = "Stoic30-Workbook-Fillable.pdf";
+
+  body = `
+    <hr/>
+
+    <div class="row space">
+      <div class="h2">You'll face</div>
+      <a class="btn" href="${workbookHref}" target="_blank" rel="noopener">
+        Open Workbook (PDF)
+      </a>
+    </div>
+
+    <div>${p.face}</div>
+
+    <hr/>
+    <div class="h2">Drill</div>
+    <div>${p.drill}</div>
+
+    <hr/>
+    <div class="h2">Mentor line</div>
+    <div>"${p.mentor}"</div>
+
+    <hr/>
+    <div class="small">
+      Tip: Open the workbook in Files or Adobe Acrobat on iPhone to type into fields.
+      Each day has a clearly labeled section.
+    </div>
+  `;
+}{
       body = `
         <hr/>
         <div class="h2">No plan scheduled</div>
